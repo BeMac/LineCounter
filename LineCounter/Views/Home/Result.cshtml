@@ -1,0 +1,66 @@
+﻿@model LineSampleBrianMc.Models.FileInfoModel
+
+<h2>Here are your results:</h2>
+
+@if (Model.IncludedLineCount == 0 && !Model.IncludedFiles.Any())
+{
+    <br /><br />
+    <div>
+        <h4> ...hmm... we found no lines of code in any searchable file extensions.</h4>
+    </div>
+}
+else
+{
+    <div>
+        <h3>We found @Model.IncludedLineCount line(s) of code in @Model.IncludedFiles.Count() eligible file(s).</h3>
+    </div>
+    <br />
+    <h4> Files searched: </h4>
+    <table>
+        @foreach (var file in Model.IncludedFiles)
+        {
+            <tr>
+                <td>
+                    @file.Name
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@if (Model.ExludedLineCount > 0)
+{
+    <br /><br />
+    <div> *We also found @Model.ExludedLineCount lines of code in in @Model.ExcludedFiles.Count() files that are not in the supported extension list.</div>
+}
+
+<br/><br /><br />
+<input type="button" id="resetSearch" value="Search Another Directory" />
+<br /><br />
+<input type="button" id="returnHome" value="Return To Main Page" />
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $(function () {
+        $("#returnHome").click(function () {
+            $('#introSection').show();
+            $('#resultSection').hide();
+        });
+
+        $("#resetSearch").click(function () {
+            var url = "/Home/Result";
+            $("#loadingArea").show();
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    $("#resultSection").html(result);
+                    $('#introSection').hide();
+                    $('#resultSection').show();
+                    $("#loadingArea").hide();
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@model LineSampleBrianMc.Models.FileInfoModel
+
+<div id="loadingArea" class="loader" style="display: none">
+    <p><img src="~/Content/loadingWheel.gif" /> Please Wait</p>
+</div>
+
+<div id="introSection">
+    <br/><br /><br />
+    <h1>Welcome!</h1>
+    <br /><br />
+    <div>
+        <h4>This simple app is intended to search a directory structure and return a line count of all the eligible files contained in that directory.</h4>
+    </div>
+    <br /><br />
+    <input type="button" id="launchExplorerBtn" value="Select Directory"/>
+    <br /><br /><br />
+    <p>* Please note, only files of the following extensions will be included:</p>
+    <p>- .aspx, - .ascx, - .cs, - .css, - .htm, - .html, - .js, - .xsl, - .xslt </p>
+</div>
+
+<div id="resultSection">
+    
+</div>
+<br /><br />
+
+<footer class="footer">
+    <p>&copy; @DateTime.Now.Year - Brian McLaughlin</p>
+</footer>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $body = $("body");
+    $(function () {
+        $("#launchExplorerBtn").click(function () {
+            var url = "/Home/Result";
+            $("#loadingArea").show();
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    $("#resultSection").html(result);
+                    $('#introSection').hide();
+                    $('#resultSection').show();
+                    $("#loadingArea").hide();
+                }
+            });
+        });
+    });
+</script>
